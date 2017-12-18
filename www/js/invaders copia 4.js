@@ -1,9 +1,10 @@
 var app = {
  //alto : 0, ancho : 0, vx: 0 , vy: 0,
+ ancho :0, alto: 0,
  inicio: function () {
-    app.alto = document.documentElement.clientHeight;
-    app.ancho = document.documentElement.clientWidth;
-    console.log('XXX inicio    ' + app.ancho + '  ' + app.alto);
+    alto = document.documentElement.clientHeight;
+    ancho = document.documentElement.clientWidth;
+     console.log('XXX inicio    ' + ancho + '  ' + alto);
 
     app.iniciaJuego();
     //app.vigilaSensores();
@@ -12,6 +13,7 @@ var app = {
     
  iniciaJuego: function () {
     function preload() {
+
         game.load.image('bullet', 'img/bullet.png');
         game.load.image('enemyBullet', 'img/enemy-bullet.png'); 
         game.load.spritesheet('invader', 'img/invader32x32x4.png', 32, 32);
@@ -19,7 +21,7 @@ var app = {
         game.load.spritesheet('kaboom', 'img/explode.png', 128, 128);
         game.load.image('starfield', 'img/starfield.png');
         game.load.image('background', 'img/background2.png');
-console.log('XXX preload');
+
     }
 
  
@@ -43,13 +45,13 @@ console.log('XXX preload');
  
 
     function create() {
-         console.log('XXX  CREATE : ' + firingTimer);
+         console.log('XXX  CREATE  ');
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         //  The scrolling starfield background
        // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
-        starfield = game.add.tileSprite(0, 0, app.ancho, app.alto, 'starfield');
+        starfield = game.add.tileSprite(0, 0, ancho, alto, 'starfield');
 
         //  Our bullet group
         bullets = game.add.group();
@@ -72,7 +74,7 @@ console.log('XXX preload');
         enemyBullets.setAll('checkWorldBounds', true);
 
         //  The hero!
-        player = game.add.sprite(app.ancho/2, 5*app.alto/6, 'ship');//400  500
+        player = game.add.sprite(ancho/2, 5*alto/6, 'ship');//400  500
         player.anchor.setTo(0.5, 0.5);
         game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -113,7 +115,6 @@ console.log('XXX preload');
         //  And some controls to play the game with
         cursors = game.input.keyboard.createCursorKeys();
         fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        console.log('XXX  FIN  CREATE  ');
 
     }
     
@@ -166,10 +167,7 @@ console.log('XXX preload');
 
     }
     
-    
-    
-    
-    function render() {
+      function render() {
 
     // for (var i = 0; i < aliens.length; i++)
     // {
@@ -177,7 +175,7 @@ console.log('XXX preload');
     // }
 
     }
-     
+    
     
     function  createAliens() {
          console.log('XXX  createAliens  ');
@@ -217,9 +215,18 @@ function setupInvader  (invader) {
     invader.animations.add('kaboom');
 
 }
-   
+    var game = new Phaser.Game(app.ancho, app.alto, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+ },
 
-function collisionHandler  (bullet, alien) {
+
+
+
+
+
+
+
+
+collisionHandler: function  (bullet, alien) {
 
     //  When a bullet hits an alien we kill them both
     bullet.kill();
@@ -247,9 +254,9 @@ function collisionHandler  (bullet, alien) {
         game.input.onTap.addOnce(restart,this);
     }
 
-}
+},
 
-function enemyHitsPlayer  (player,bullet) {
+enemyHitsPlayer: function  (player,bullet) {
     
     bullet.kill();
 
@@ -278,9 +285,9 @@ function enemyHitsPlayer  (player,bullet) {
         game.input.onTap.addOnce(restart,this);
     }
 
-}
+},
 
-function enemyFires  () {
+enemyFires: function  () {
 
     //  Grab the first bullet we can from the pool
     enemyBullet = enemyBullets.getFirstExists(false);
@@ -308,9 +315,9 @@ function enemyFires  () {
         firingTimer = game.time.now + 2000;
     }
 
-}
+},
 
-function fireBullet  () {
+fireBullet: function  () {
 
     //  To avoid them being allowed to fire too fast we set a time limit
     if (game.time.now > bulletTime)
@@ -327,20 +334,19 @@ function fireBullet  () {
         }
     }
 
-}
+},
 
-function resetBullet  (bullet) {
+resetBullet: function  (bullet) {
 
     //  Called if the bullet goes out of the screen
     bullet.kill();
 
-}
+},
 
-function restart  () {
+restart: function  () {
 
     //  A new level starts
-            console.log('XXX  restart  ');
-
+    
     //resets the life count
     lives.callAll('revive');
     //  And brings the aliens back from the dead :)
@@ -352,14 +358,10 @@ function restart  () {
     //hides the text
     stateText.visible = false;
 
-}
+},
 
-    var game = new Phaser.Game(app.ancho, app.alto, Phaser.AUTO, 'juego1', { preload: preload, create: create, update: update, render: render });
 
- //var game = new Phaser.Game(app.ancho, app.alto, Phaser.AUTO, 'juego1', { preload: preload, create: create, update: update, render: render });
- },
 
-/*
 vigilaSensores: function  () {
     var opciones = {frequency: 100};
             console.log('vigilaSensores');
@@ -381,7 +383,7 @@ vigilaSensores: function  () {
     vx = datosAceleracion.x;
     vy = datosAceleracion.y;
  },
- */
+ 
 
 }
 
