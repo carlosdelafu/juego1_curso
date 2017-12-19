@@ -1,5 +1,7 @@
 var app = {
  //alto : 0, ancho : 0, vx: 0 , vy: 0,
+ //iphone 320 x 568
+ 
  inicio: function () {
     app.alto = document.documentElement.clientHeight;
     app.ancho = document.documentElement.clientWidth;
@@ -39,6 +41,8 @@ var app = {
     var scoreText;
     var fireString = '';
     var fireText;
+    var moveString = '';
+    var moveText;
     var lives;
     var enemyBullet;
     var firingTimer = 0;
@@ -93,8 +97,11 @@ var app = {
         scoreString = 'Score : ';
         scoreText = game.add.text(10, 10, scoreString + score, { font: '24px Arial', fill: '#fff' });
 //  The fire
-        fireString = 'TAP for FIRE ';
-        fireText = game.add.text(app.ancho/4, 9*app.alto/10, fireString , { font: '24px Arial', fill: '#fff' });
+        fireString = 'TAP for FIRE';
+        fireText = game.add.text(game.world.centerX- 24*fireString.length/4, 9*app.alto/10, fireString , { font: '24px Arial', fill: '#fff' });
+        
+        moveString = 'Move telephone for move ship ';//+ scoreString.length+'  '+24*fireString.length/2;
+        moveText = game.add.text(game.world.centerX- 18*fireString.length/2, 17*app.alto/18, moveString , { font: '18px Arial', fill: '#fff' });
 
 
         //  Lives
@@ -189,7 +196,7 @@ var app = {
 
     }
      
-    
+ /*   
     function  createAliens() {
          console.log('XXX  createAliens  ');
 
@@ -214,8 +221,39 @@ var app = {
     //  When the tween loops it calls descend
     tween.onLoop.add(descend, this);
     }
+*/
+     
+    function  createAliens() {
+         console.log('XXX  createAliens  ');
 
-  
+    for (var y = 0; y < 3; y++)
+    {
+        for (var x = 0; x < app.ancho/64; x++)
+        {
+            var alien = aliens.create(x * 48, y * 50, 'invader');
+            alien.anchor.setTo(0.5, 0.5);
+            alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
+            alien.play('fly');
+            alien.body.moves = false;
+        }
+    }
+
+    aliens.x = 30;
+    aliens.y = 80;
+
+    //  All this does is basically start the invaders moving. Notice we're moving the Group they belong
+    //   to, rather than the invaders directly.
+    //x:100  es la longitud del "contoneo""
+    var tween = game.add.tween(aliens).to( { x: 100 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+
+
+
+    //  When the tween loops it calls descend
+    tween.onLoop.add(descend, this);
+    }
+    
+    
+    
  function descend () {
 
     aliens.y += 10;
