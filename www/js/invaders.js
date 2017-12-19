@@ -6,7 +6,8 @@ var app = {
     console.log('XXX inicio    ' + app.ancho + '  ' + app.alto);
 
     app.iniciaJuego();
-    //app.vigilaSensores();
+    console.log('XXX tras iniciaJuego');
+    app.vigilaSensores();
  },
  
     
@@ -19,11 +20,12 @@ var app = {
         game.load.spritesheet('kaboom', 'img/explode.png', 128, 128);
         game.load.image('starfield', 'img/starfield.png');
         game.load.image('background', 'img/background2.png');
-console.log('XXX preload');
+    console.log('XXX preload');
     }
 
  
-
+    var vx = 0;
+    var vy = 0;
     var player;
     var aliens;
     var bullets;
@@ -35,6 +37,8 @@ console.log('XXX preload');
     var score = 0;
     var scoreString = '';
     var scoreText;
+    var fireString = '';
+    var fireText;
     var lives;
     var enemyBullet;
     var firingTimer = 0;
@@ -49,6 +53,7 @@ console.log('XXX preload');
 
         //  The scrolling starfield background
        // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+       
         starfield = game.add.tileSprite(0, 0, app.ancho, app.alto, 'starfield');
 
         //  Our bullet group
@@ -72,10 +77,11 @@ console.log('XXX preload');
         enemyBullets.setAll('checkWorldBounds', true);
 
         //  The hero!
-        player = game.add.sprite(app.ancho/2, 5*app.alto/6, 'ship');//400  500
+        player = game.add.sprite(app.ancho/2, 4*app.alto/5, 'ship');//400  500
         player.anchor.setTo(0.5, 0.5);
         game.physics.enable(player, Phaser.Physics.ARCADE);
-
+ 
+        player.body.collideWorldBounds = true;
         //  The baddies!
         aliens = game.add.group();
         aliens.enableBody = true;
@@ -86,6 +92,10 @@ console.log('XXX preload');
         //  The score
         scoreString = 'Score : ';
         scoreText = game.add.text(10, 10, scoreString + score, { font: '24px Arial', fill: '#fff' });
+//  The fire
+        fireString = 'TAP for FIRE ';
+        fireText = game.add.text(app.ancho/4, 9*app.alto/10, fireString , { font: '24px Arial', fill: '#fff' });
+
 
         //  Lives
         lives = game.add.group();
@@ -135,21 +145,22 @@ console.log('XXX preload');
             else if (cursors.right.isDown)
             {
                 player.body.velocity.x = 200;
-            }else{
+            }else{ 
+             //   console.log('XXX vx:' + vx)
                 if (app.vx < - 1)
                 {
-                    player.body.velocity.x = -200;
+                    player.body.velocity.x = 200;
                 }
                 else if (app.vx > 1)
                 {
-                    player.body.velocity.x = 200;
+                    player.body.velocity.x = -200;
                 }
             } 
 
             //  Firing?
 
 
-            if (fireButton.isDown)
+            if (fireButton.isDown || game.input.activePointer.isDown)
             {
                 fireBullet();
             }
@@ -260,6 +271,9 @@ function enemyHitsPlayer  (player,bullet) {
         live.kill();
     }
 
+
+    navigator.vibrate(100);
+
     //  And create an explosion :)
     var explosion = explosions.getFirstExists(false);
     explosion.reset(player.body.x, player.body.y);
@@ -358,11 +372,35 @@ function restart  () {
 
  //var game = new Phaser.Game(app.ancho, app.alto, Phaser.AUTO, 'juego1', { preload: preload, create: create, update: update, render: render });
  },
+ 
+ /*
+vigilaSensores: function () {
+    var opciones = {frequency: 100};
+    function onError() {
+    console.log('Error');
+ }
+ function onSuccess(datosAceleracion) {
+    app.detectaAgitacion(datosAceleracion);
+    app.registraMovimiento(datosAceleracion);
+ }
+ navigator.accelerometer.watchAcceleration(onSuccess, onError, opciones);
+ },
+ registraMovimiento: function (datosAceleracion) {
+    app.vx = datosAceleracion.x;
+    app.vy = datosAceleracion.y;
+ },
+ detectaAgitacion: function (datosAceleracion) {
+    var acX = datosAceleracion.x > app.umbral;
+    var acY = datosAceleracion.y > app.umbral;
+    if (acX || acY) {
+    setTimeout(app.recomienza,1000);
+ }
+ },
+*/
 
-/*
 vigilaSensores: function  () {
     var opciones = {frequency: 100};
-            console.log('vigilaSensores');
+            console.log('XXX   vigilaSensores');
 
     function onError() {
         console.log('Error vigilaSensores');
@@ -371,17 +409,17 @@ vigilaSensores: function  () {
         //app.detectaAgitacion(datosAceleracion);
                     console.log('onSuccess(datosAceleracion) ');
 
-        registraMovimiento(datosAceleracion);
+        app.registraMovimiento(datosAceleracion);
     }
     navigator.accelerometer.watchAcceleration(onSuccess, onError, opciones);
  },
  registraMovimiento: function  (datosAceleracion) {
     console.log('registraMovimiento: ' + datosAceleracion.x);
 
-    vx = datosAceleracion.x;
-    vy = datosAceleracion.y;
+    app.vx = datosAceleracion.x;
+    app.vy = datosAceleracion.y;
  },
- */
+ 
 
 }
 
